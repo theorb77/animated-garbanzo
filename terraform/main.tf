@@ -88,6 +88,9 @@ resource "aws_lb_target_group" "app_target_group" {
   protocol    = "HTTP"
   vpc_id      = "vpc-0508d1abc31012c6f"
   target_type = "ip"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb_listener" "app_listener" {
