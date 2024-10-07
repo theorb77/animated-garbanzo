@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - name: Checkout
-          uses: actions/checkout@v2
+          uses: actions/checkout@v4
 
         - name: Set up ECR
           uses: aws-actions/configure-aws-credentials@v1
@@ -37,9 +37,9 @@ jobs:
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
         - name: Download Terraform
-          uses: hashicorp/setup-terraform@v1
+          uses: hashicorp/setup-terraform@v3
           with:
-            terraform_version: 1.0.0
+            terraform_version: 1.9.0
 
         - name: Terraform Init
           run: terraform init
