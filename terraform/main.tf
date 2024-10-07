@@ -66,7 +66,6 @@ resource "aws_ecs_service" "service" {
   network_configuration {
     subnets          = ["subnet-035f229c16d3e5bbb","subnet-0695d9c20ddb0a8fd","subnet-0ccfe9e4791eb332b"]
     assign_public_ip = true
-    security_groups  = ["sg-098d8e07dc8df4f85"]
   }
 
   load_balancer {
@@ -80,7 +79,6 @@ resource "aws_lb" "app_lb" {
   name               = "helloworldlb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["sg-098d8e07dc8df4f85"]
   subnets            = ["subnet-035f229c16d3e5bbb","subnet-0695d9c20ddb0a8fd","subnet-0ccfe9e4791eb332b"]
 }
 
