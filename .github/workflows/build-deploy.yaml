@@ -1,0 +1,48 @@
+name: Build-Deploy
+run-name: Building and Deploying
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  build-deploy:
+    name: Build and deploy container image
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+
+        - name: Set up ECR
+          uses: aws-actions/configure-aws-credentials@v1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{secrets.AWS_REGION}}
+
+        - name: Log in to ECR
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v1
+
+        - name: Build and push the image to ECR
+          env:
+            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            ECR_REPOSITORY: ${{secrets.AWS_ECR_REPO}}
+            IMAGE_TAG: helloworld:latest
+          run: |
+            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+        - name: Download Terraform
+          uses: hashicorp/setup-terraform@v1
+          with:
+            terraform_version: 1.0.0
+
+        - name: Terraform Init
+          run: terraform init
+          working-directory: ./terraform
+
+        - name: Terraform Apply
+          run: terraform apply -auto-approve
+          working-directory: ./terraform
