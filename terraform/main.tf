@@ -77,7 +77,7 @@ resource "aws_ecs_service" "service" {
 }
 
 resource "aws_lb" "app_lb" {
-  name               = "$helloworld-lb"
+  name               = "helloworldlb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["sg-098d8e07dc8df4f85"]
