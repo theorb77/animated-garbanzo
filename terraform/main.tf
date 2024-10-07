@@ -71,7 +71,7 @@ resource "aws_ecs_service" "service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.app_target_group.arn
     container_name   = "helloworld"
-    container_port   = 5000
+    container_port   = 80
   }
 }
 
@@ -84,7 +84,7 @@ resource "aws_lb" "app_lb" {
 
 resource "aws_lb_target_group" "app_target_group" {
   name        = "helloworld-tg"
-  port        = 5000
+  port        = 80
   protocol    = "HTTP"
   vpc_id      = "vpc-0508d1abc31012c6f"
   target_type = "ip"
