@@ -36,7 +36,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 
 resource "aws_ecs_task_definition" "task" {
   family                   = "helloworld"
-  network_mode             = "awsvpc"
+  network_mode             = "bridge"
   cpu                      = "256"
   memory                   = "512"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
@@ -48,7 +48,7 @@ resource "aws_ecs_task_definition" "task" {
       essential     = true
       portMappings  = [
         {
-          containerPort = 80
+          containerPort = 5000
           hostPort      = 80
         }
       ]
@@ -71,7 +71,7 @@ resource "aws_ecs_service" "service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.app_target_group.arn
     container_name   = "helloworld"
-    container_port   = 80
+    container_port   = 5000
   }
 }
 
@@ -90,6 +90,9 @@ resource "aws_lb_target_group" "app_target_group" {
   target_type = "ip"
   lifecycle {
     create_before_destroy = true
+  }
+  health_check {
+    path = "/health"
   }
 }
 

@@ -1,12 +1,13 @@
 import boto3 
 import os
+import sys
 from flask import Flask
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 app = Flask(__name__)
 FlaskInstrumentor().instrument_app(app)
 dynamodb = boto3.resource('dynamodb', 
-           os.environ['AWS_REGION'], 
+           region_name=os.environ['AWS_REGION'], 
            aws_access_key_id=os.environ['ACCESS_ID'], 
            aws_secret_access_key=os.environ['ACCESS_KEY'])
 table = dynamodb.Table("simpletable")
@@ -24,5 +25,10 @@ def hello_world():
         response = '500 (Internal Server Error)'
     return response
 
+@app.route('/health')
+def health_check():
+    response = "200 (OK)"
+    return response
+
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=80)
+    app.run(debug=True)
