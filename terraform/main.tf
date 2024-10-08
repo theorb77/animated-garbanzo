@@ -36,11 +36,10 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 
 resource "aws_ecs_task_definition" "task" {
   family                   = "helloworld"
-  network_mode             = "bridge"
+  network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  requires_compatibilities = ["FARGATE"]
 
   container_definitions = jsonencode([
     {
@@ -50,7 +49,7 @@ resource "aws_ecs_task_definition" "task" {
       portMappings  = [
         {
           containerPort = 5000
-          hostPort      = 80
+          hostPort      = 5000
         }
       ]
     }
@@ -85,7 +84,7 @@ resource "aws_lb" "app_lb" {
 
 resource "aws_lb_target_group" "app_target_group" {
   name        = "helloworld-tg"
-  port        = 80
+  port        = 5000
   protocol    = "HTTP"
   vpc_id      = "vpc-0508d1abc31012c6f"
   target_type = "ip"
@@ -99,7 +98,7 @@ resource "aws_lb_target_group" "app_target_group" {
 
 resource "aws_lb_listener" "app_listener" {
   load_balancer_arn = aws_lb.app_lb.arn
-  port              = "80"
+  port              = "5000"
   protocol          = "HTTP"
 
   default_action {
