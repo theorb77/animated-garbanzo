@@ -59,6 +59,7 @@ resource "aws_ecs_task_definition" "task" {
           awslogs-region        = data.aws_region.current.name
           awslogs-stream-prefix = "app"
         }
+      }
     }
   ])
 }
