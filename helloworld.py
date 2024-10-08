@@ -7,7 +7,10 @@ from opentelemetry.instrumentation.flask import FlaskInstrumentor
 app = Flask(__name__)
 FlaskInstrumentor().instrument_app(app)
 dynamodb = boto3.resource('dynamodb', 
-           region_name=os.environ['AWS_REGION'])
+           region_name=os.environ['AWS_REGION'],
+           aws_access_key_id=os.environ['ACCESS_ID'], 
+           aws_secret_access_key=os.environ['ACCESS_KEY']
+)
 table = dynamodb.Table("simpletable")
 result = table.scan()
 if result is not None:
