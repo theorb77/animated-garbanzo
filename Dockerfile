@@ -8,7 +8,7 @@ RUN apt-get update -y
 
 RUN apt-get upgrade -y
 
-RUN apt-get install -y python3 python3-pip
+RUN apt-get install -y python3 python3-pip gunicorn
 
 COPY . .
 
@@ -20,4 +20,4 @@ ENV ACCESS_ID=$ACCESS_ID
 ARG ACCESS_KEY=null
 ENV ACCESS_KEY=$ACCESS_KEY
 
-ENTRYPOINT [ "python3", "/app/helloworld.py" ]
+CMD ["gunicorn" , "--bind","0.0.0.0:80", "wsgi:app"]
